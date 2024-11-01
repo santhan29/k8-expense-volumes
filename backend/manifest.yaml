@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend
+  namespace: expense1
+data:
+  DB_HOST: mysql 
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: expense1
+  labels:    #replica set labels
+    app: backend
+    tier: app
+    project: expense 
+spec:
+  # modify replicas according to your case
+  replicas: 2
+  selector:
+    matchLabels:  #these are used to select the pod to create replicas
+      app: backend
+      tier: app
+      project: expense
+  template:   #this is pod template
+    metadata:
+      labels:  #these labels belongs to pod 
+        app: backend
+        tier: app
+        project: expense
+    spec:
+      containers:
+      - name: backend
+        image: santhan29/backend:v1 
+        envFrom:
+        - configMapRef:
+            name: backend
+---
+kind: Service
+apiVersion: v1
+metadata:
+ name: backend
+ namespace: expense1 
+spec: 
+  selector:
+    app: backend
+    tier: app
+    project: expense
+  ports:
+    - name: backend-port
+      protocol: TCP
+      port: 8080  #service port
+      targetPort: 8080 #container port 
