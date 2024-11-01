@@ -10,7 +10,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: backend
-  namespace: expense1
+  namespace: expense
   labels:    #replica set labels
     app: backend
     tier: app
@@ -41,7 +41,7 @@ kind: Service
 apiVersion: v1
 metadata:
  name: backend
- namespace: expense1 
+ namespace: expense
 spec: 
   selector:
     app: backend
